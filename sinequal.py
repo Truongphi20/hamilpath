@@ -192,19 +192,20 @@ def giai_bien(index,order,he,nguon_goc): # Giải ra list hệ tiêu biến củ
 def phogia(index,tieu_bien3): #từ index của biến còn lại và hàm tiêu biến xuất ra list giá trị 
     max_bien = []
     min_bien = []
+    #print(tieu_bien3)
     for i in range(len(tieu_bien3)):
         if tieu_bien3[i][index] > 0:
             min_bien.append(float('%.6f' % (-tieu_bien3[i][-1]/ tieu_bien3[i][index])))
         elif tieu_bien3[i][index] < 0:
             max_bien.append(float('%.10f' % (-tieu_bien3[i][-1]/ tieu_bien3[i][index])))
-    #print(max_bien)
-    #print(min_bien)
+    # print(max_bien)
+    # print(min_bien)
 
     max_bien_value = math.floor(min(max_bien))
-    #print(max_bien_value)
+    # print(max_bien_value)
 
     min_bien_value = math.ceil(max(min_bien))
-    #print(min_bien_value)
+    # print(min_bien_value)
 
     return list(range(min_bien_value,max_bien_value+1))
 
@@ -433,6 +434,114 @@ def Solve_Inequal(biens, cuctri, he_bpt):
 	return  [biens[index] for index in order], Tra_kq_ct(lib_ng,order)
 
 
+def SolveByMatrix(matrix, order, nguon_goc, cuctri):
+	order_tl = order_tlv(order) # Thu tu index the vao de tim pho gia
+	#print(order_tl)
+
+	he = re_order_ma(matrix,nguon_goc,order) # Tao ma tran tu he bpt
+	# print(he)
+
+	ct_bor = [cuctri[order_tl[-1][len(cuctri)-1-i]] for i in range(len(cuctri))] # list cuc tri theo order
+	#print(ct_bor)
+
+	lib_bp = giai_bien(order[-1],order,he,nguon_goc) # Thu vien he tieu bien lan luot cac bien theo order
+	#print(lib_bp[0])
+
+
+	## Calculation
+	classa = 1
+	pho = phogia(order[-1],lib_bp[-1]) # Pho cua bien cuc tri
+	#print(pho)
+	lib_ng = {"/"+str(i):pho[i] for i in range(len(pho))} #Them vao thu vien
+	#print(lib_ng)
+	lib_tt = {}
+	#print(lib_tt)
+
+	while classa <= len(lib_bp)-1 and classa > 0:
+		#print(f'class: {classa}')
+		#print(f'lib_ng: {lib_ng}')
+
+		ng_sd, keys = call_ng(lib_ng,classa) # goi nghiem su dung
+		#print(ng_sd)
+		#print(keys)
+
+		#print(classa)
+
+		lib_tt = add_libtt(cuctri,lib_tt,order_tl,classa-1,ng_sd) # them thu tu vao lib thu tu
+		#print(lib_tt)
+
+		if lib_tt[classa-1] == "-": # Neu khong phai la cuc tri thi giai het
+
+			tem = 0
+			#print(ng_sd)
+			for ng, key in zip(ng_sd,keys):
+				#print(ng)
+				#print(order_tl[classa-1])
+				hr = thay_nghiem(lib_bp[len(lib_bp)-classa-1], order_tl[classa-1], ng)
+				#print(hr)
+				pho = phogia(order[len(order)-1-classa],hr)
+				#print(f'phobth: {pho}')
+
+				#print(classa)
+				if len(pho) != 0:
+					for i in range(len(pho)):
+						lib_ng['/'+str(i) + key]  = pho[i]
+				else:
+					#print(1)
+					tem += 1 
+
+			if tem == len(ng_sd):
+				if ct_bor[0] != 0: 
+					#print(classa)
+					classa = nearest(classa, ct_bor)
+					#print(classa)
+					k = lib_tt[classa] - ct_bor[classa]
+					#print(f'k: {k}, {classa}')
+					#print(lib_ng)
+					#print(call_ng(lib_ng,classa+1)[0])
+					if k < 0 or k > len(call_ng(lib_ng,classa+1)[0])-1:
+						classa = classa -1 
+					lib_tt[classa] = lib_tt[classa] - ct_bor[classa]
+					#print(classa)
+					lib_ng = ClearLib_ng(lib_ng,classa+2)
+					lib_tt = ClearLib_tt(lib_tt,classa+1)
+			classa += 1
+
+
+		else:   # Neu la bien cuc tri can xet giai
+
+			ng = ng_sd[lib_tt[classa-1]]
+			key = keys[lib_tt[classa-1]]
+			#print(f'ngct:{ng}')
+			#print(key)
+
+			hrct = thay_nghiem(lib_bp[len(lib_bp)-classa-1], order_tl[classa-1], ng)
+			#print(hrct)
+			phoct = phogia(order[len(order)-1-classa],hrct)
+			#print(f'test{phogia(3,hrct)}')
+			#print(f'phoct: {phoct}')
+
+			#print(1)
+			if len(phoct) == 0:
+				#print(ng_sd)
+				k = lib_tt[classa-1] - ct_bor[classa-1]
+				if k < 0 or k > len(call_ng(ng_sd,classa+1)[0])-1:
+					classa = classa -1
+				#print(lib_tt)
+				#print(f'{lib_tt[classa-1]}- {ct_bor[classa-1]}')
+				lib_tt[classa-1] = lib_tt[classa-1] - ct_bor[classa-1]
+				#print(f'lb la {lib_tt[classa-1]}')
+				lib_ng = ClearLib_ng(lib_ng,classa+1)
+				lib_tt = ClearLib_tt(lib_tt,classa)
+			else:
+				for i in range(len(phoct)):
+					lib_ng['/'+str(i) + key]  = phoct[i]
+				#print(lib_ng)
+				classa += 1
+		
+	#print(lib_ng)
+	return  Tra_kq_ct(lib_ng,order) 
+
 """
 biens = ["h","l","c","w","b","p","n","S","W"] # Đặt ẩn tương ứng là lượng item lấy ở từng item
 cuctri = [0,0,0,0,0,0,0,1,-1]
@@ -470,3 +579,17 @@ he_bpt = ['a>=0','b>=0','c>=0','d>=0','e>=0','f>=0','g>=0','h>=0','i>=0',
 items_lay = Solve_Inequal(biens, cuctri, he_bpt)
 print(items_lay)
 """
+
+# biens = ['a','b','c','d','e','f','g','h','i']
+# cuctri = [0,0,0,0,0,0,0,0,0]
+
+# he_bpt = ['a>=0','b>=0','c>=0','d>=0','e>=0','f>=0','g>=0','h>=0','i>=0',
+#          'a<=1','b<=1','c<=1','d<=1','e<=1','f<=1','g<=1','h<=1','i<=1', #coefficient equal 0 or 1
+#          'a+b+c+d+e+f+g+h+i==5', #Sum equal point number minus 1
+#          '0*a<=1',
+#           'a<=1','c<=1','b+e<=1','d<=1','f+g<=1','h+i<=1', #line 1 of matrix
+#           'b<=1','a+d<=1','c+f<=1','e+g+h<=1','i<=1', #line 2 of matrix
+#          ]
+
+# items_lay = Solve_Inequal(biens, cuctri, he_bpt)
+# print(items_lay)
