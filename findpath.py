@@ -1,5 +1,5 @@
 import numpy as np
-import sinequal as si
+from module import sinequal as si
 
 def FindPoints(list_vec): #Find point in graph
     points = []
