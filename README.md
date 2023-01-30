@@ -1,4 +1,4 @@
-Finding the Hamiltonian path and Hamiltonian Circuit by Solve system of linear inequalities
+Finding the Hamiltonian Path and Circuit by Solve system of linear inequalities
 ======
 
 # 1. Introduce
