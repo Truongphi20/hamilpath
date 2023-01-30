@@ -1,4 +1,4 @@
-Find the path to go through all points
+Finding the Hamiltonian path and Hamiltonian Circuit by Solve system of linear inequalities
 ======
 
 # 1. Introduce
