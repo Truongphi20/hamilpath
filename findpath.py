@@ -1,5 +1,19 @@
 import numpy as np
 from module import sinequal as si
+import argparse
+
+# Initialize parser
+parser = argparse.ArgumentParser()
+ 
+# Adding optional argument
+parser.add_argument("-t", "--vectors")
+parser.add_argument("-v",'--version', action='version', version='%(prog)s 2.0',help = 'show version')
+parser.add_argument("-s", "--show",default = 'b', help = 'only showing the formula (f), triagle matrix (m) or both (b)[default]?')
+
+
+# Read arguments from command line
+args = parser.parse_args()
+
 
 def FindPoints(list_vec): #Find point in graph
     points = []
@@ -182,7 +196,8 @@ def PathThrough(list_vec):
 
 
 # list_vec = ['BA', 'AC', 'CB', 'BD', 'DC', 'CE', 'DE', 'DF', 'EF']
-list_vec = ['AC','CB','AB','BD','DC']
+# list_vec = ['AC','CB','AB','BD','DC']
+list_vec = args.vectors.split(',')
 
 path = PathThrough(list_vec)
 print(path)
