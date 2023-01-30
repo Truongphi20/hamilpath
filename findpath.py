@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser()
 # Adding optional argument
 parser.add_argument("-t", "--vectors")
 parser.add_argument("-v",'--version', action='version', version='%(prog)s 2.0',help = 'show version')
-
+parser.add_argument("-c",'--circuit',default= 'p', help='Circuit (c) or path (p)?')
 
 # Read arguments from command line
 args = parser.parse_args()
@@ -64,7 +64,7 @@ def PrepareCo(matrixes): # Prepare coeffcient condition matrix
 
 
 
-def SolveMatrix(list_vec, points, matrixes): # Intializing matrix for solving
+def SolveMatrix(list_vec, points, matrixes, c_value): # Intializing matrix for solving
     sys_matrix = np.empty((0,len(list_vec)+1), int)
     #print(sys_matrix)
     for i in range(len(list_vec)): # Add postitive condition and lesser than 1
@@ -81,10 +81,10 @@ def SolveMatrix(list_vec, points, matrixes): # Intializing matrix for solving
     #print(sys_matrix)
 
     sum_row = [1]*(len(list_vec)+1) # Add sum condition equal number of points
-    sum_row[-1] = -len(points)+1
+    sum_row[-1] = -len(points)+c_value
 
     neg_sum_row = [-1]*(len(list_vec)+1)
-    neg_sum_row[-1] = len(points)-1
+    neg_sum_row[-1] = len(points)-c_value
 
     sys_matrix = np.append(sys_matrix,np.array([sum_row,neg_sum_row]),axis=0)
     #print(sys_matrix)
@@ -107,9 +107,9 @@ def CreatNguon(total_matrix,list_vec):
     #print(init_nguon)
     return init_nguon
 
-def Solve_Coeff(list_vec, points, matrixes): # Solve vector coefficients
+def Solve_Coeff(list_vec, points, matrixes, c_value): # Solve vector coefficients
     
-    het_matrix = SolveMatrix(list_vec, points, matrixes)
+    het_matrix = SolveMatrix(list_vec, points, matrixes, c_value)
     # print(het_matrix)
 
     nguon_goc = CreatNguon(het_matrix,list_vec)
@@ -175,7 +175,36 @@ def ColectPath(coeffs,rs_matrix,points):
             final_paths.append(path)
     return final_paths
 
-def PathThrough(list_vec):
+def FindPathC(coe, points):
+    took_vectors = [list_vec[i] for i in range(len(list_vec)) if coe[i] == 1]
+    # print(took_vectors)
+
+    start_char = points[0]
+    # print(start_char)
+
+    end_char = points[0]
+    # print(end_char)
+
+    path = start_char
+    path, took_vectors = ChangeVec(took_vectors,start_char,path)
+    # print(path)
+    # print(took_vectors)
+
+    while path[-1] != end_char:
+        path, took_vectors = ChangeVec(took_vectors,path[-1],path)
+    # print(path)
+    return path
+
+def ColectPathC(coeffs,points):
+    final_paths =  []
+    lene = len(points)+1
+    for coe in coeffs:
+        path = FindPathC(coe, points)
+        if len(path) == lene:
+            final_paths.append(path)
+    return final_paths
+
+def PathThrough(list_vec,c_value):
 
     points = FindPoints(list_vec)
     # print(points)
@@ -183,14 +212,18 @@ def PathThrough(list_vec):
     matrixes = Cre_Matrix(list_vec, points)
     # print(matrixes)
 
-    coeffs = Solve_Coeff(list_vec,points,matrixes)
+    coeffs = Solve_Coeff(list_vec,points,matrixes,c_value)
     # print(coeffs)
 
-    rs_matrix = PhiMatrix(coeffs,points,matrixes)
-    # print(rs_matrix)
+    if c_value == 1:
+        rs_matrix = PhiMatrix(coeffs,points,matrixes)
+        # print(rs_matrix)
 
-    path = ColectPath(coeffs,rs_matrix,points)
-    # print(path)
+        path = ColectPath(coeffs,rs_matrix,points)
+        # print(path)
+    elif c_value == 0:
+        path = ColectPathC(coeffs,points)
+
     return path
 
 
@@ -198,5 +231,12 @@ def PathThrough(list_vec):
 # list_vec = ['AC','CB','AB','BD','DC']
 list_vec = args.vectors.split(',')
 
-path = PathThrough(list_vec)
+if args.circuit == 'p':
+    c_value = 1
+elif args.circuit == 'c':
+    c_value = 0
+
+
+
+path = PathThrough(list_vec, c_value)
 print(path)
