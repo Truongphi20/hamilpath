@@ -19,12 +19,14 @@ Move the terminal's working directory to the downloaded "hamilpath" directory (`
     
 Output:
 
-    usage: findpath.py [-h] [-t VECTORS] [-v]
+    usage: findpath.py [-h] [-t VECTORS] [-v] [-c CIRCUIT]
 
     optional arguments:
       -h, --help            show this help message and exit
       -t VECTORS, --vectors VECTORS
       -v, --version         show version
+      -c CIRCUIT, --circuit CIRCUIT
+                            Circuit (c) or path (p)?
 
 ## 2.3 Example
 Suppose we need to find the hamiltonian path for the following graph:
@@ -54,6 +56,16 @@ $D \to C \to A \to B$;
 $B \to D \to C \to A$;
 
 $B \to C \to A \to D$
+
+Furthermore, finding Hamiltonian Circuit could be done by adding `-c` tag. As the following command.
+           
+    python .\findpath.py -t AD,AB,BD,DC,CD,BC,CA -c c
+
+Output:
+
+    ['ABDCA']
+
+So, the Hamiltonian circuit for the above example is: $A \to B \to D \to C \to AA$
 
 # 3. Explaining algorithm
 ## 3.1 Definition of $\phi$-matrice
