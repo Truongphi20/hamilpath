@@ -88,7 +88,7 @@ def SolveMatrix(list_vec, points, matrixes): # Intializing matrix for solving
     return total_matrix
 
 def CreatNguon(total_matrix,list_vec):
-    init_nguon = [0]*(len(total_matrix)-1)
+    init_nguon = [0]*len(total_matrix)
     init_nguon[len(list_vec)*2] = 1
     init_nguon[len(list_vec)*2+1] = 1
     #print(init_nguon)
@@ -97,10 +97,10 @@ def CreatNguon(total_matrix,list_vec):
 def Solve_Coeff(list_vec, points, matrixes): # Solve vector coefficients
     
     het_matrix = SolveMatrix(list_vec, points, matrixes)
-    #print(het_matrix)
+    # print(het_matrix)
 
     nguon_goc = CreatNguon(het_matrix,list_vec)
-    #print(nguon_goc)
+    # print(nguon_goc)
 
     order = list(range(len(list_vec)))
     #print(order)
@@ -157,7 +157,7 @@ def ColectPath(coeffs,rs_matrix,points):
     lene = len(points)
     for coe, ma in zip(coeffs,rs_matrix):
         path = FindPath(coe, ma, points)
-        print(path)
+        # print(path)
         if len(path) == lene:
             final_paths.append(path)
     return final_paths
@@ -165,16 +165,16 @@ def ColectPath(coeffs,rs_matrix,points):
 def PathThrough(list_vec):
 
     points = FindPoints(list_vec)
-    print(points)
+    # print(points)
 
     matrixes = Cre_Matrix(list_vec, points)
-    #print(matrixes)
+    # print(matrixes)
 
     coeffs = Solve_Coeff(list_vec,points,matrixes)
     # print(coeffs)
 
     rs_matrix = PhiMatrix(coeffs,points,matrixes)
-    print(rs_matrix[16])
+    # print(rs_matrix)
 
     path = ColectPath(coeffs,rs_matrix,points)
     # print(path)
@@ -182,7 +182,7 @@ def PathThrough(list_vec):
 
 
 # list_vec = ['BA', 'AC', 'CB', 'BD', 'DC', 'CE', 'DE', 'DF', 'EF']
-list_vec = ['AC','CA','CB','BC','AB','BA','BD','DB','DC','CD']
+list_vec = ['AC','CB','AB','BD','DC']
 
 path = PathThrough(list_vec)
 print(path)

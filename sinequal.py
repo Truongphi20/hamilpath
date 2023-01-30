@@ -330,7 +330,7 @@ def Solve_Inequal(biens, cuctri, he_bpt):
 	#print(order_tl)
 
 	he = re_order_ma(mak_hebpt_matrix(he_bpt,biens),nguon_goc,order) # Tao ma tran tu he bpt
-	#print(he)
+	# print(he)
 
 	ct_bor = [cuctri[order_tl[-1][len(cuctri)-1-i]] for i in range(len(cuctri))] # list cuc tri theo order
 	#print(ct_bor)
@@ -437,6 +437,10 @@ def Solve_Inequal(biens, cuctri, he_bpt):
 def SolveByMatrix(matrix, order, nguon_goc, cuctri):
 	order_tl = order_tlv(order) # Thu tu index the vao de tim pho gia
 	#print(order_tl)
+
+	# print(matrix)
+	# print(nguon_goc)
+	# print(order)
 
 	he = re_order_ma(matrix,nguon_goc,order) # Tao ma tran tu he bpt
 	# print(he)
@@ -593,3 +597,18 @@ print(items_lay)
 
 # items_lay = Solve_Inequal(biens, cuctri, he_bpt)
 # print(items_lay)
+
+'''
+biens = ['a','b','c','d']
+cuctri = [0,0,0,0]
+
+he_bpt = ['a>=0','b>=0','c>=0','d>=0',
+         'a<=1','b<=1','c<=1','d<=1', #coefficient equal 0 or 1
+         'a+b+c+d==3', #Sum equal point number minus 1
+          'a<=1','b<=1','c<=1','d<=1', #line 1 of matrix
+          'a+d<=1','b+c<=1' #line 2 of matrix
+         ]
+
+items_lay = Solve_Inequal(biens, cuctri, he_bpt)
+print(items_lay)
+'''
