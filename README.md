@@ -65,7 +65,7 @@ Output:
 
     ['ABDCA']
 
-So, the Hamiltonian circuit for the above example is: $A \to B \to D \to C \to AA$
+So, the Hamiltonian circuit for the above example is: $A \to B \to D \to C \to A$
 
 # 3. Explaining algorithm
 ## 3.1 Definition of $\phi$-matrice
